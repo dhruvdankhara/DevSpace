@@ -7,7 +7,7 @@ import {
   AvailableUserRoles,
   UserGenderEnum,
   UserRolesEnum,
-} from "../../constants";
+} from "../constants";
 
 const userSchema = new Schema(
   {
