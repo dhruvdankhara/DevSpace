@@ -16,7 +16,10 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-import errorHandler from "./middlewares/error.middleware";
+import errorHandler from "./middlewares/error.middleware.js";
+import authRoute from "./router/auth.router.js";
+
+app.use("/api/v1/auth", authRoute);
 
 app.use(errorHandler);
 

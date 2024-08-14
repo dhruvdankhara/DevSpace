@@ -1,8 +1,5 @@
 export const DB_NAME = "devspace";
 
-/**
- * @type {{ ADMIN: "ADMIN"; USER: "USER"} as const}
- */
 export const UserRolesEnum = {
   USER: "USER",
   ADMIN: "ADMIN",
@@ -17,3 +14,8 @@ export const UserGenderEnum = {
 };
 
 export const AvailableUserGender = Object.values(UserGenderEnum);
+
+export const cookieOption = {
+  httpOnly: true,
+  secure: true,
+};

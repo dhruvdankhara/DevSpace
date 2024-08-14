@@ -1,13 +1,14 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { generateToken } from "../config/jwt.js";
 
 import {
   AvailableUserGender,
   AvailableUserRoles,
   UserGenderEnum,
   UserRolesEnum,
-} from "../constants";
+} from "../constants.js";
 
 const userSchema = new Schema(
   {
@@ -68,17 +69,14 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 };
 
 userSchema.methods.generateAccessToken = function () {
-  return jwt.sign(
-    {
-      _id: this._id,
-      name: this.name,
-      username: this.username,
-      email: this.email,
-      role: this.role,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRY }
-  );
+  const payload = {
+    _id: this._id,
+    name: this.name,
+    username: this.username,
+    email: this.email,
+    role: this.role,
+  };
+  return generateToken(payload);
 };
 
 const User = model("User", userSchema);
