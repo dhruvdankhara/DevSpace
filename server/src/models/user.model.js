@@ -75,6 +75,7 @@ userSchema.methods.generateAccessToken = function () {
     username: this.username,
     email: this.email,
     role: this.role,
+    avatar: this.avatar,
   };
   return generateToken(payload);
 };

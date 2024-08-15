@@ -1,8 +1,9 @@
-import asyncHandler from "../utils/asyncHandler";
-import { verifyToken } from "../config/jwt";
-import { ApiError } from "../utils/ApiError";
+import asyncHandler from "../utils/asyncHandler.js";
+import { verifyToken } from "../config/jwt.js";
+import { ApiError } from "../utils/ApiError.js";
+import User from "../models/user.model.js";
 
-const authMiddleware = asyncHandler((req, res, next) => {
+const verifyJWT = asyncHandler(async (req, res, next) => {
   const { token } = req.cookies;
 
   if (!token) {
@@ -10,11 +11,18 @@ const authMiddleware = asyncHandler((req, res, next) => {
   }
 
   try {
-    const data = verifyToken(token);
-    req.user = data;
+    const decodedData = verifyToken(token);
+
+    const user = await User.findById(decodedData?._id).select(
+      "-password -createdAt -updatedAt -__v"
+    );
+
+    req.user = user;
+
+    next();
   } catch (error) {
     throw new ApiError(401, "Unauthorized");
   }
 });
 
-export default asyncHandler;
+export { verifyJWT };

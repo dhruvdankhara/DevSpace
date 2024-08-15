@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
 
 const app = express();
 
@@ -15,9 +16,12 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(
+  morgan(":method :url :status :response-time ms - :res[content-length]")
+);
 
 import errorHandler from "./middlewares/error.middleware.js";
-import authRoute from "./router/auth.router.js";
+import authRoute from "./router/auth.routes.js";
 
 app.use("/api/v1/auth", authRoute);
 
