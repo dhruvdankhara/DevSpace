@@ -22,8 +22,10 @@ app.use(
 
 import errorHandler from "./middlewares/error.middleware.js";
 import authRoute from "./router/auth.routes.js";
+import blogRoute from "./router/blog.routes.js";
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/blog", blogRoute);
 
 app.use(errorHandler);
 
