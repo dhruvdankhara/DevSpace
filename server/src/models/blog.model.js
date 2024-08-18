@@ -11,6 +11,12 @@ const blogScheme = new Schema(
       required: true,
       trim: true,
     },
+    slug: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
     featureImage: {
       type: String,
       default: "",

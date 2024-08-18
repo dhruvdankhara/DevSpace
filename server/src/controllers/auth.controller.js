@@ -8,7 +8,7 @@ import {
   loginSchema,
   registerSchema,
 } from "../schemas/auth.schema.js";
-import { uploadImage } from "../utils/cloudinary.js";
+import { deleteImage, uploadImage } from "../utils/cloudinary.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, username, password } = req.body;
@@ -131,6 +131,12 @@ export const changeAvatar = asyncHandler(async (req, res) => {
 
   if (!file) {
     throw new ApiError(400, "Please provide an image");
+  }
+
+  if (user.avatar) {
+    await deleteImage(
+      user.avatar.substring(user.avatar.lastIndexOf("/") + 1).split(".")[0]
+    );
   }
 
   const imageUrl = await uploadImage(file.path);
