@@ -11,9 +11,7 @@ export const loginSchema = Yup.object()
   .shape({
     username: Yup.string(),
     email: Yup.string().email("Invalid email format"),
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters long")
-      .required("Password is required"),
+    password: Yup.string().required("Password is required"),
   })
   .test(
     "at-least-one",
@@ -26,4 +24,11 @@ export const loginSchema = Yup.object()
 export const changePasswordSchema = Yup.object().shape({
   newPassword: Yup.string().min(8).required("new password is required."),
   oldPassword: Yup.string().required("old passwor is required."),
+});
+
+export const updateUserSchema = Yup.object().shape({
+  name: Yup.string(),
+  email: Yup.string().email(),
+  username: Yup.string().lowercase(),
+  gender: Yup.string(),
 });

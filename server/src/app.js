@@ -1,7 +1,11 @@
 import express from "express";
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import { readFileSync } from "fs";
+import path from "path";
 
 const app = express();
 
@@ -23,9 +27,24 @@ app.use(
 import errorHandler from "./middlewares/error.middleware.js";
 import authRoute from "./router/auth.routes.js";
 import blogRoute from "./router/blog.routes.js";
+import userRoute from "./router/user.routes.js";
+import commentRoute from "./router/comment.routes.js";
+
+// Swagger setup
+const swaggerDocument = JSON.parse(readFileSync(path.resolve("swagger.json")));
+
+const swaggerOptions = {
+  swaggerDefinition: swaggerDocument,
+  apis: ["./src/router/*.js"], // Path to the API docs
+};
+
+const swaggerSpecs = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/blog", blogRoute);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/comment", commentRoute);
 
 app.use(errorHandler);
 

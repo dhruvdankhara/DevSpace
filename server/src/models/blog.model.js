@@ -25,6 +25,10 @@ const blogScheme = new Schema(
       type: String,
       required: true,
     },
+    visits: {
+      type: Number,
+      default: 0,
+    },
     topicId: [
       {
         type: Schema.Types.ObjectId,

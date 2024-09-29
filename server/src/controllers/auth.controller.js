@@ -7,6 +7,7 @@ import {
   changePasswordSchema,
   loginSchema,
   registerSchema,
+  updateUserSchema,
 } from "../schemas/auth.schema.js";
 import { deleteImage, uploadImage } from "../utils/cloudinary.js";
 
@@ -45,7 +46,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const response = new ApiResponse(
     201,
-    createdUser,
+    { user: createdUser, token },
     "User register successfully"
   );
   return res
@@ -104,6 +105,21 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
   return res.status(response.statusCode).json(response);
 });
 
+export const getUserProfile = asyncHandler(async (req, res) => {
+  const username = req.params.username;
+
+  const user = await User.findOne({ username }).select(
+    "-password -refreshToken"
+  );
+
+  if (!user) {
+    throw new ApiError(404, "User not found with this username");
+  }
+
+  const response = new ApiResponse(200, user, "User fetched successfully");
+  return res.status(response.statusCode).json(response);
+});
+
 export const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
@@ -153,4 +169,36 @@ export const changeAvatar = asyncHandler(async (req, res) => {
   return res.status(response.statusCode).json(response);
 });
 
+export const updateUser = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { name, username, email, gender } = req.body;
+
+  // Validate request body
+  await updateUserSchema.validate({ name, username, email, gender });
+
+  // Check if email or username is already taken
+  const isEmailTaken = await User.findOne({ email });
+  if (isEmailTaken && isEmailTaken._id.toString() !== user._id.toString()) {
+    throw new ApiError(409, "Email already exists");
+  }
+
+  const isUsernameTaken = await User.findOne({ username });
+  if (
+    isUsernameTaken &&
+    isUsernameTaken._id.toString() !== user._id.toString()
+  ) {
+    throw new ApiError(409, "Username already exists");
+  }
+
+  // Update user details
+  user.name = name || user.name;
+  user.username = username || user.username;
+  user.email = email || user.email;
+  user.gender = gender || user.gender;
+
+  await user.save();
+
+  const response = new ApiResponse(200, user, "User updated successfully");
+  return res.status(response.statusCode).json(response);
+});
 // TODO: add forgot password feature with mail otp : nodemailer

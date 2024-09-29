@@ -5,6 +5,7 @@ import {
   deleteBlogPost,
   editBlogPost,
   getBlogPost,
+  getBlogPosts,
 } from "../controllers/blog.controller.js";
 import upload from "../middlewares/multer.middlewares.js";
 
@@ -12,6 +13,7 @@ const router = Router();
 
 router
   .route("/")
+  .get(getBlogPosts)
   .post(verifyJWT, upload.single("featureImage"), createBlogPost);
 
 router

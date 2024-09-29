@@ -7,7 +7,7 @@ const commentSchema = new Schema(
       ref: "User",
     },
     blogId: {
-      type: Schema.Typres.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Blog",
     },
     content: {
