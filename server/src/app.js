@@ -11,7 +11,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://dev-space-jade.vercel.app",
     credentials: true,
   })
 );
