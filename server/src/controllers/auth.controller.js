@@ -10,6 +10,7 @@ import {
   updateUserSchema,
 } from "../schemas/auth.schema.js";
 import { deleteImage, uploadImage } from "../utils/cloudinary.js";
+import Follow from "../models/follow.model.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, username, password } = req.body;
@@ -116,7 +117,35 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found with this username");
   }
 
-  const response = new ApiResponse(200, user, "User fetched successfully");
+  const followers = await Follow.find({
+    follower: user._id,
+  });
+
+  const following = await Follow.find({
+    following: user._id,
+  });
+
+  let isFollowing = false;
+
+  if (req.user) {
+    const isFollow = await Follow.findOne({
+      follower: req.user._id,
+      following: user._id,
+    });
+
+    if (isFollow) {
+      isFollowing = true;
+    }
+  }
+
+  const data = {
+    ...user._doc,
+    followers: followers.length,
+    following: following.length,
+    isFollowing,
+  };
+
+  const response = new ApiResponse(200, data, "User fetched successfully");
   return res.status(response.statusCode).json(response);
 });
 

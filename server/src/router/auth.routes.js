@@ -9,7 +9,10 @@ import {
   getUserProfile,
   updateUser,
 } from "../controllers/auth.controller.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import {
+  verifyJWT,
+  getLoggedInUserOrIgnore,
+} from "../middlewares/auth.middleware.js";
 import upload from "../middlewares/multer.middlewares.js";
 
 const router = Router();
@@ -136,7 +139,7 @@ router.get("/me", verifyJWT, getCurrentUser);
  *       404:
  *         description: User not found
  */
-router.get("/user/:username", getUserProfile);
+router.get("/user/:username", getLoggedInUserOrIgnore, getUserProfile);
 
 // update user releted routes
 

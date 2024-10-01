@@ -3,11 +3,11 @@ import { Schema, model } from "mongoose";
 const followSchema = new Schema(
   {
     // follower --> following :: harsh --> dhruv :: harsh is following dhruv
-    followerId: {
+    follower: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    followingId: {
+    following: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
