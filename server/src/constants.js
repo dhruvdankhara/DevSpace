@@ -18,4 +18,5 @@ export const AvailableUserGender = Object.values(UserGenderEnum);
 export const cookieOption = {
   httpOnly: true,
   secure: true,
+  sameSite: "None",
 };

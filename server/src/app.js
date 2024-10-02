@@ -9,12 +9,12 @@ import path from "path";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "https://dev-space-jade.vercel.app",
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: "https://dev-space-jade.vercel.app",
+  credentials: true, // Allow credentials (cookies)
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
