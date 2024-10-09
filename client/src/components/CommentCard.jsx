@@ -2,8 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function CommentCard({ createdAt, content, author, _id }) {
-  console.log("🚀 ~ CommentCard ~ createdAt:", createdAt);
-
   function formatDate(dateString) {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");

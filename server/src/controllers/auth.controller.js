@@ -106,49 +106,6 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
   return res.status(response.statusCode).json(response);
 });
 
-export const getUserProfile = asyncHandler(async (req, res) => {
-  const username = req.params.username;
-
-  const user = await User.findOne({ username }).select(
-    "-password -refreshToken"
-  );
-
-  if (!user) {
-    throw new ApiError(404, "User not found with this username");
-  }
-
-  const followers = await Follow.find({
-    follower: user._id,
-  });
-
-  const following = await Follow.find({
-    following: user._id,
-  });
-
-  let isFollowing = false;
-
-  if (req.user) {
-    const isFollow = await Follow.findOne({
-      follower: req.user._id,
-      following: user._id,
-    });
-
-    if (isFollow) {
-      isFollowing = true;
-    }
-  }
-
-  const data = {
-    ...user._doc,
-    followers: followers.length,
-    following: following.length,
-    isFollowing,
-  };
-
-  const response = new ApiResponse(200, data, "User fetched successfully");
-  return res.status(response.statusCode).json(response);
-});
-
 export const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 

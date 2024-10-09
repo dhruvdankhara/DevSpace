@@ -12,6 +12,23 @@ function Comment({ _id, author }) {
 
   const loggedInUser = useSelector((state) => state.auth.user);
   const { isLoggedIn } = useSelector((state) => state.auth);
+
+  const fetchComments = async () => {
+    setLoading(true);
+
+    getPostComments(_id)
+      .then((response) => {
+        setComments(response.data);
+        console.log("🚀 ~ fetchComments ~ response:", response);
+      })
+      .catch((error) => {
+        console.log("comment fetch error: ", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -30,11 +47,15 @@ function Comment({ _id, author }) {
     try {
       const response = await createComment({ blogId: _id, content });
       console.log("🚀 ~ comment post ~ response:", response);
+
+      await fetchComments();
+
       toast.success("Comment posted successfully", {
         id: createCommentToast,
       });
     } catch (error) {
       console.log("🚀 ~ comment post ~ error:", error);
+
       toast.error(
         error.response.data.message || "error while posting comment",
         {
@@ -47,16 +68,7 @@ function Comment({ _id, author }) {
   };
 
   useEffect(() => {
-    getPostComments(_id)
-      .then((response) => {
-        setComments(response.data);
-      })
-      .catch((error) => {
-        console.log("comment fetch error: ", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    fetchComments();
   }, []);
 
   return (

@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-  followUser,
-  getUserPosts,
-  getUserProfile,
-  unfollowUser,
-} from "../api/index";
-import { Button, Container, BlogCard, LogoutBtn } from "../components/index";
+import { getUserPosts, getUserProfile } from "../api/index";
+import { Container, BlogCard, LogoutBtn } from "../components/index";
 import { useSelector } from "react-redux";
-import toast from "react-hot-toast";
+import FollowBtn from "../components/FollowBtn";
 
 function Profile() {
   const { username } = useParams();
@@ -18,43 +13,6 @@ function Profile() {
   const [error, setError] = useState("");
 
   const stateUserData = useSelector((state) => state.auth.user);
-  const isUserLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-
-  const follow = async () => {
-    const followToast = toast.loading("Following user...");
-
-    if (!isUserLoggedIn) {
-      toast.error("Login first!", {
-        id: followToast,
-      });
-      return;
-    }
-    try {
-      const response = await followUser(userData._id);
-      console.log("🚀 ~ follow ~ response:", response);
-      setUserData({ ...userData, isFollowing: !userData.isFollowing });
-      toast.success("followed", {
-        id: followToast,
-      });
-    } catch (error) {
-      console.log("🚀 ~ follow ~ error:", error);
-      toast.error(error.response.data.message, {
-        id: followToast,
-      });
-    }
-  };
-
-  const unfollow = async () => {
-    try {
-      const response = await unfollowUser(userData._id);
-      console.log("🚀 ~ unfollow ~ response:", response);
-      setUserData({ ...userData, isFollowing: !userData.isFollowing });
-      toast.success("unfollowed");
-    } catch (error) {
-      console.log("🚀 ~ unfollow ~ error:", error);
-      toast.error(error.response.data.message);
-    }
-  };
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -139,13 +97,7 @@ function Profile() {
                     <LogoutBtn />
                   </div>
                 ) : (
-                  <div>
-                    {userData.isFollowing ? (
-                      <Button onClick={unfollow}>unfollow</Button>
-                    ) : (
-                      <Button onClick={follow}>Follow</Button>
-                    )}
-                  </div>
+                  <FollowBtn userData={userData} setUserData={setUserData} />
                 )}
               </div>
             </div>

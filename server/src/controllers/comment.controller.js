@@ -2,16 +2,20 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import Comment from "../models/comment.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import Blog from "../models/blog.model.js";
 import mongoose from "mongoose";
 
 export const createComment = asyncHandler(async (req, res) => {
   const user = req.user;
-  const { content, blogId } = req.body;
+  const { blogId } = req.params;
+  const { content } = req.body;
+
+  const blogPost = await Blog.findById(blogId);
 
   const comment = await Comment.create({
     content,
     userId: user._id,
-    blogId,
+    blogId: blogPost._id,
   });
 
   if (!comment) {
@@ -22,7 +26,7 @@ export const createComment = asyncHandler(async (req, res) => {
   return res.status(response.statusCode).json(response);
 });
 
-export const blogComments = asyncHandler(async (req, res) => {
+export const getBlogComments = asyncHandler(async (req, res) => {
   const { blogId } = req.params;
 
   const comments = await Comment.aggregate([

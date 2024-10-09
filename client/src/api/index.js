@@ -28,15 +28,15 @@ export const registerUser = async ({ name, username, email, password }) => {
   return response.data;
 };
 
-// user profile calles
-
 export const getLogedInUser = async () => {
   const response = await apiClient.get("/auth/me");
   return response.data;
 };
 
+// user profile calles
+
 export const getUserProfile = async (username) => {
-  const response = await apiClient.get(`/auth/user/${username}`);
+  const response = await apiClient.get(`/user/${username}`);
   return response.data;
 };
 
@@ -57,13 +57,13 @@ export const getPosts = async () => {
   return response.data;
 };
 
-export const getPost = async (slug) => {
-  const response = await apiClient.get(`/blog/${slug}`);
+export const getPost = async (blogId) => {
+  const response = await apiClient.get(`/blog/${blogId}`);
   return response.data;
 };
 
 export const getUserPosts = async (username) => {
-  const response = await apiClient.get(`/user/blogs/${username}`);
+  const response = await apiClient.get(`/user/${username}/blogs`);
   return response.data;
 };
 
@@ -72,38 +72,35 @@ export const createPost = async (data) => {
   return response.data;
 };
 
-export const deletePost = async (slug) => {
-  const response = await apiClient.delete(`/blog/${slug}`);
+export const deletePost = async (blogId) => {
+  const response = await apiClient.delete(`/blog/${blogId}`);
   return response.data;
 };
 
-export const editPost = async (slug, data) => {
-  const response = await apiClient.post(`/blog/${slug}`, data);
+export const editPost = async ({ blogId, data }) => {
+  const response = await apiClient.post(`/blog/${blogId}`, data);
   return response.data;
 };
 
 // comment
 
 export const createComment = async ({ blogId, content }) => {
-  const response = await apiClient.post("/comment", {
-    blogId,
-    content,
-  });
+  const response = await apiClient.post(`/blog/${blogId}/comment`, { content });
   return response.data;
 };
 
 export const getPostComments = async (blogId) => {
-  const response = await apiClient.get(`/comment/${blogId}`);
+  const response = await apiClient.get(`/blog/${blogId}/comment`);
   return response.data;
 };
 
-export const followUser = async (userId) => {
-  const response = await apiClient.post(`/user/follow/${userId}`);
+export const followUser = async (username) => {
+  const response = await apiClient.post(`/user/${username}/follow`);
   return response.data;
 };
 
-export const unfollowUser = async (userId) => {
-  const response = await apiClient.post(`/user/unfollow/${userId}`);
+export const unfollowUser = async (username) => {
+  const response = await apiClient.post(`/user/${username}/unfollow`);
   return response.data;
 };
 

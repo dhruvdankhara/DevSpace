@@ -163,7 +163,7 @@ export const getBlogPost = asyncHandler(async (req, res) => {
   return res.status(response.statusCode).json(response);
 });
 
-export const getBlogPosts = asyncHandler(async (req, res) => {
+export const getAllBlogPosts = asyncHandler(async (req, res) => {
   const blog = await Blog.aggregate([
     {
       $lookup: {
@@ -211,3 +211,7 @@ export const getBlogPosts = asyncHandler(async (req, res) => {
   );
   return res.status(response.statusCode).json(response);
 });
+
+// export const likeBlogPost = asyncHandler(async (req, res) => {
+//   const { slug } = req.params;
+// });

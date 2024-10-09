@@ -48,12 +48,13 @@ function EditPost() {
     formData.append("title", title);
     formData.append("slug", slug);
     formData.append("content", content);
+
     if (featureImage) {
       formData.append("featureImage", image);
     }
 
     try {
-      const response = await editPost(blogId, formData);
+      const response = await editPost({ blogId, data: formData });
       console.log("🚀 ~ handleSubmit ~ response:", response);
 
       toast.success("Blog post Updating successfully.", {

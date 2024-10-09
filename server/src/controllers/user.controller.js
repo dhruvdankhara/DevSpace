@@ -3,6 +3,50 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import User from "../models/user.model.js";
 import Follow from "../models/follow.model.js";
+import { ApiError } from "../utils/ApiError.js";
+
+export const getUserProfile = asyncHandler(async (req, res) => {
+  const username = req.params.username;
+
+  const user = await User.findOne({ username }).select(
+    "-password -refreshToken"
+  );
+
+  if (!user) {
+    throw new ApiError(404, "User not found with this username");
+  }
+
+  const followers = await Follow.find({
+    following: user._id,
+  });
+
+  const following = await Follow.find({
+    follower: user._id,
+  });
+
+  let isFollowing = false;
+
+  if (req.user) {
+    const isFollow = await Follow.findOne({
+      follower: req.user._id,
+      following: user._id,
+    });
+
+    if (isFollow) {
+      isFollowing = true;
+    }
+  }
+
+  const data = {
+    ...user._doc,
+    followers: followers.length,
+    following: following.length,
+    isFollowing,
+  };
+
+  const response = new ApiResponse(200, data, "User fetched successfully");
+  return res.status(response.statusCode).json(response);
+});
 
 export const getUserPost = asyncHandler(async (req, res) => {
   const { username } = req.params;
@@ -77,19 +121,17 @@ export const getUserPost = asyncHandler(async (req, res) => {
 });
 
 export const followUser = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  const { username } = req.params;
   const loggedInUser = req.user;
 
-  if (userId === loggedInUser._id.toString()) {
-    const response = new ApiResponse(400, {}, "You can't follow yourself");
-    return res.status(response.statusCode).json(response);
-  }
-
-  const followedUser = await User.findById(userId);
+  const followedUser = await User.findOne({ username });
 
   if (!followedUser) {
-    const response = new ApiResponse(404, {}, "User not found");
-    return res.status(response.statusCode).json(response);
+    throw new ApiError(404, {}, "User not found");
+  }
+
+  if (followedUser.username === loggedInUser.username) {
+    throw new ApiError(400, "You can't follow yourself");
   }
 
   const isAlreadyFollowing = await Follow.findOne({
@@ -98,8 +140,7 @@ export const followUser = asyncHandler(async (req, res) => {
   });
 
   if (isAlreadyFollowing) {
-    const response = new ApiResponse(400, {}, "You already follow this user");
-    return res.status(response.statusCode).json(response);
+    throw new ApiError(400, "You already follow this user");
   }
 
   const follow = await Follow.create({
@@ -107,24 +148,22 @@ export const followUser = asyncHandler(async (req, res) => {
     following: followedUser._id,
   });
 
-  const response = new ApiResponse(201, null, "User followed successfully");
+  const response = new ApiResponse(201, follow, "User followed successfully");
   return res.status(response.statusCode).json(response);
 });
 
 export const unfollowUser = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
+  const { username } = req.params;
   const loggedInUser = req.user;
 
-  if (userId === loggedInUser._id.toString()) {
-    const response = new ApiResponse(400, {}, "You can't unfollow yourself");
-    return res.status(response.statusCode).json(response);
-  }
-
-  const followedUser = await User.findById(userId);
+  const followedUser = await User.findOne({ username });
 
   if (!followedUser) {
-    const response = new ApiResponse(404, {}, "User not found");
-    return res.status(response.statusCode).json(response);
+    throw new ApiError(404, "User not found");
+  }
+
+  if (followedUser.username === loggedInUser.username) {
+    throw new ApiError(400, "You can't unfollow yourself");
   }
 
   const isFollowing = await Follow.findOne({
@@ -133,8 +172,7 @@ export const unfollowUser = asyncHandler(async (req, res) => {
   });
 
   if (!isFollowing) {
-    const response = new ApiResponse(400, {}, "You don't follow this user");
-    return res.status(response.statusCode).json(response);
+    throw new ApiError(400, "You don't follow this user");
   }
 
   await Follow.findByIdAndDelete(isFollowing._id);
