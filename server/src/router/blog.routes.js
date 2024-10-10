@@ -6,6 +6,8 @@ import {
   editBlogPost,
   getBlogPost,
   getAllBlogPosts,
+  likeBlogPost,
+  unlikeBlogPost,
 } from "../controllers/blog.controller.js";
 import upload from "../middlewares/multer.middlewares.js";
 import {
@@ -31,7 +33,7 @@ router
   .get(getBlogComments)
   .post(verifyJWT, createComment);
 
-// router.route("/:blogId/like").post(verifyJWT, likeBlog);
-// router.route("/:blogId/unlike").post(verifyJWT, unlikeBlog);
+router.route("/:blogId/like").post(verifyJWT, likeBlogPost);
+router.route("/:blogId/unlike").post(verifyJWT, unlikeBlogPost);
 
 export default router;

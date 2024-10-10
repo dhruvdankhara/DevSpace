@@ -1,4 +1,5 @@
 import Blog from "../models/blog.model.js";
+import Like from "../models/like.model.js";
 import { createBlogPostSchema } from "../schemas/blog.schema.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -212,6 +213,56 @@ export const getAllBlogPosts = asyncHandler(async (req, res) => {
   return res.status(response.statusCode).json(response);
 });
 
-// export const likeBlogPost = asyncHandler(async (req, res) => {
-//   const { slug } = req.params;
-// });
+export const likeBlogPost = asyncHandler(async (req, res) => {
+  const { blogId } = req.params;
+
+  const blog = await Blog.findById(blogId);
+
+  if (!blog) {
+    throw new ApiError(404, "Blog post not found");
+  }
+
+  const isAlreadyLiked = await Like.findOne({
+    userId: req.user._id,
+    blogId: blog._id,
+  });
+
+  if (isAlreadyLiked) {
+    throw new ApiError(400, "You have already liked this blog post");
+  }
+
+  await Like.create({
+    userId: req.user._id,
+    blogId: blog._id,
+  });
+
+  const response = new ApiResponse(200, null, "Blog post liked successfully");
+  return res.status(response.statusCode).json(response);
+});
+
+export const unlikeBlogPost = asyncHandler(async (req, res) => {
+  const { blogId } = req.params;
+
+  const blog = await Blog.findById(blogId);
+
+  if (!blog) {
+    throw new ApiError(404, "Blog post not found");
+  }
+
+  const isAlreadyLiked = await Like.findOne({
+    userId: req.user._id,
+    blogId: blog._id,
+  });
+
+  if (!isAlreadyLiked) {
+    throw new ApiError(400, "You have not liked this blog post");
+  }
+
+  await Like.findOneAndDelete({
+    userId: req.user._id,
+    blogId: blog._id,
+  });
+
+  const response = new ApiResponse(200, null, "Blog post unliked successfully");
+  return res.status(response.statusCode).json(response);
+});
