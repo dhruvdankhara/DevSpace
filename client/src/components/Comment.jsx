@@ -73,7 +73,9 @@ function Comment({ _id, author }) {
 
   return (
     <div className="border-2 border-black rounded-3xl flex flex-col gap-5 p-10 bg-white">
-      <h1 className="text-4xl font-bold">Comments</h1>
+      <h1 id="comments" className="text-4xl font-bold">
+        Comments
+      </h1>
       <form onSubmit={handleSubmit} className="flex gap-5">
         <img src={loggedInUser.avatar} className="rounded-full w-12" alt="" />
         <input

@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import {
+  getLoggedInUserOrIgnore,
+  verifyJWT,
+} from "../middlewares/auth.middleware.js";
 import {
   createBlogPost,
   deleteBlogPost,
@@ -24,7 +27,7 @@ router
 
 router
   .route("/:blogId")
-  .get(getBlogPost)
+  .get(getLoggedInUserOrIgnore, getBlogPost)
   .post(verifyJWT, upload.single("featureImage"), editBlogPost)
   .delete(verifyJWT, deleteBlogPost);
 

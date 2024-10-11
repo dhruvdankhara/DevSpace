@@ -41,7 +41,7 @@ function Blog() {
           <p>Loading...</p>
         ) : (
           <>
-            <BlogPost {...post} />
+            <BlogPost {...post} setPost={setPost} />
           </>
         )}
       </Container>

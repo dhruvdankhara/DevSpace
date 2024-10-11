@@ -37,11 +37,14 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     }
   }
 
+  const posts = await Blog.find({ userId: user._id });
+
   const data = {
     ...user._doc,
     followers: followers.length,
     following: following.length,
     isFollowing,
+    posts: posts.length,
   };
 
   const response = new ApiResponse(200, data, "User fetched successfully");

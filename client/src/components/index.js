@@ -11,6 +11,7 @@ import LogoutBtn from "./LogoutBtn";
 import Comment from "./Comment";
 // import CommentCard from "./CommentCard";
 import CommentCard from "./CommentCard.jsx";
+import LikeBtn from "./LikeBtn.jsx";
 
 export {
   Container,
@@ -23,6 +24,7 @@ export {
   Input,
   Register,
   Comment,
+  LikeBtn,
   BlogForm,
   LogoutBtn,
 };

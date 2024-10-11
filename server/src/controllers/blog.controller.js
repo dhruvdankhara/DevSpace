@@ -1,4 +1,5 @@
 import Blog from "../models/blog.model.js";
+import Comment from "../models/comment.model.js";
 import Like from "../models/like.model.js";
 import { createBlogPostSchema } from "../schemas/blog.schema.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -155,9 +156,25 @@ export const getBlogPost = asyncHandler(async (req, res) => {
 
   await Blog.updateOne({ _id: blog[0]._id }, { visits: blog[0].visits + 1 });
 
+  let isLiked = false;
+  if (req.user) {
+    const like = await Like.findOne({
+      userId: req.user._id,
+      blogId: blog[0]._id,
+    });
+
+    if (like) {
+      isLiked = true;
+    }
+  }
+
+  const likes = await Like.find({ blogId: blog[0]._id });
+
+  const comments = await Comment.find({ blogId: blog[0]._id });
+
   const response = new ApiResponse(
     200,
-    blog[0],
+    { ...blog[0], isLiked, likes: likes.length, comments: comments.length },
     "Blog post retrieved successfully"
   );
 

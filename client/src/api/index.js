@@ -104,4 +104,14 @@ export const unfollowUser = async (username) => {
   return response.data;
 };
 
+export const likeBlogPost = async (blogId) => {
+  const response = await apiClient.post(`/blog/${blogId}/like`);
+  return response.data;
+};
+
+export const unlikeBlogPost = async (blogId) => {
+  const response = await apiClient.post(`/blog/${blogId}/unlike`);
+  return response.data;
+};
+
 export default apiClient;

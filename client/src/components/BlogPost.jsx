@@ -1,14 +1,51 @@
-import { Button, Comment } from "./index";
+import { Button, Comment, LikeBtn } from "./index";
 import { useSelector } from "react-redux";
 import { deletePost, getUserProfile } from "../api/index";
 import { Link, useNavigate } from "react-router-dom";
-import { FaRegEye } from "react-icons/fa";
+import { FaHeart, FaRegEye, FaRegHeart } from "react-icons/fa";
+import { MdOutlineComment } from "react-icons/md";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
 
-function BlogPost({ title, featureImage, content, author, _id, slug, visits }) {
+function BlogPost({
+  title,
+  featureImage,
+  content,
+  author,
+  _id,
+  createdAt,
+  slug,
+  visits,
+  isLiked,
+  likes,
+  setPost,
+  posts,
+  comments,
+}) {
   const user = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const month = monthNames[date.getMonth()]; // Get month name
+    const year = date.getFullYear();
+    return `${day} ${month}, ${year}`;
+  }
 
   const handleDeletePost = () => {
     const deleteBlogToast = toast.loading("Deleting Blog Post");
@@ -61,12 +98,25 @@ function BlogPost({ title, featureImage, content, author, _id, slug, visits }) {
         <div className="flex flex-col gap-4 ">
           <h1 className="text-5xl font-bold">{title}</h1>
           <p className="flex justify-start items-center gap-2">
-            <FaRegEye className="w-5 h-5" /> {visits} views
+            <FaRegEye className="w-5 h-5" />{" "}
+            <p>
+              <span className="font-semibold">{visits}</span> views
+            </p>
+          </p>
+          <p className="text-lg text-slate-800 font-semibold">
+            {formatDate(createdAt)}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div className="col-span-1 md:col-span-2">
+            <div className="flex border-t-2 border-b-2 border-slate-400 mb-5">
+              <LikeBtn {...{ _id, isLiked, likes }} setPost={setPost} />
+              <a href="#comments" className="flex gap-2 p-5">
+                <MdOutlineComment className="w-7 h-7" />
+                <p className="text-lg font-bold">{comments}</p>
+              </a>
+            </div>
             <img
               className="mx-auto rounded-2xl"
               src={featureImage}
@@ -98,7 +148,7 @@ function BlogPost({ title, featureImage, content, author, _id, slug, visits }) {
               <div>
                 <div className="flex text-center gap-5">
                   <p>
-                    <span className="font-bold">{author.posts || 101}</span>
+                    <span className="font-bold">{author.posts}</span>
                     <br />
                     Posts
                   </p>
