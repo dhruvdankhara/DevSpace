@@ -10,7 +10,7 @@ function Comment({ _id, author }) {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const loggedInUser = useSelector((state) => state.auth.user);
+  const loggedInUser = useSelector((state) => state.auth.data);
   const { isLoggedIn } = useSelector((state) => state.auth);
 
   const fetchComments = async () => {

@@ -3,7 +3,7 @@ import { Header } from "./components";
 import { useEffect, useState } from "react";
 import { getLogedInUser } from "./api";
 import { useDispatch } from "react-redux";
-import { login } from "./features/auth/authSlice";
+import { login, logout } from "./features/auth/authSlice";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -12,15 +12,21 @@ function App() {
   useEffect(() => {
     getLogedInUser()
       .then((response) => {
-        dispatch(login(response.data));
+        if (response.status) {
+          dispatch(login(response.data));
+        } else {
+          dispatch(logout());
+        }
       })
       .catch((error) => {
-        console.log("🚀 ~ App.js ~ error:", error);
+        console.log("🚀 ~ App.js ~ check Auth error:", error);
+        dispatch(logout());
       })
       .finally(() => {
         setLoading(false);
       });
   }, []);
+
   return !loading ? (
     <>
       <Header />

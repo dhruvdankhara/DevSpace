@@ -22,7 +22,7 @@ function BlogPost({
   posts,
   comments,
 }) {
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.data);
   const navigate = useNavigate();
 
   function formatDate(dateString) {

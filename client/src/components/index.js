@@ -12,10 +12,12 @@ import Comment from "./Comment";
 // import CommentCard from "./CommentCard";
 import CommentCard from "./CommentCard.jsx";
 import LikeBtn from "./LikeBtn.jsx";
+import Logo from "./Logo.jsx";
 
 export {
   Container,
   Header,
+  Logo,
   CommentCard,
   Button,
   BlogCard,
