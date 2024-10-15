@@ -10,12 +10,12 @@ function BlogCard({ _id, title, featureImage, author, createdAt, slug }) {
 
   return (
     <Link to={`/blog/${slug}`}>
-      <div className="flex flex-col justify-between gap-5 border-2 p-5 rounded-3xl h-full bg-white transition-all duration-300 hover:border-black">
+      <div className="flex h-full flex-col justify-between gap-5 rounded-3xl border-2 bg-white p-5 transition-all duration-300 hover:border-black">
         <div className="flex items-center gap-4">
           <img
             src={author.avatar}
             alt=""
-            className="w-10 h-10 object-cover rounded-full"
+            className="h-10 w-10 rounded-full object-cover"
           />
           <div className="flex flex-col">
             <h3 className="text-sm">{author.username}</h3>
@@ -27,7 +27,7 @@ function BlogCard({ _id, title, featureImage, author, createdAt, slug }) {
           <img
             src={featureImage}
             alt=""
-            className="rounded-2xl w-full h-48 object-cover"
+            className="h-48 w-full rounded-2xl object-cover"
           />
         </div>
       </div>

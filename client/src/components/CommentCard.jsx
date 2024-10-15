@@ -25,15 +25,15 @@ export default function CommentCard({ createdAt, content, author, _id }) {
   }
 
   return (
-    <div className="p-3 flex gap-3" key={_id}>
+    <div className="flex gap-3 p-3" key={_id}>
       <div>
-        <img src={author.avatar} className="rounded-full w-11" alt="" />
+        <img src={author.avatar} className="w-11 rounded-full" alt="" />
       </div>
-      <div className="border py-5 px-3 rounded-md w-full flex flex-col gap-3">
+      <div className="flex w-full flex-col gap-3 rounded-md border px-3 py-5">
         <p>
           <Link
             to={`/u/${author.username}`}
-            className="font-semibold hover:bg-gray-200 transition-all duration-200 inline p-2 rounded-md text-lg"
+            className="inline rounded-md p-2 text-lg font-semibold transition-all duration-200 hover:bg-gray-200"
           >
             @{author.username}
           </Link>

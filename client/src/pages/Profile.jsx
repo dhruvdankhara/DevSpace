@@ -50,8 +50,8 @@ function Profile() {
     return (
       <div className="my-10">
         <Container>
-          <div className="border-2 border-black rounded-2xl p-5">
-            <p className="font-bold text-center text-2xl">{error}</p>
+          <div className="rounded-2xl border-2 border-black p-5">
+            <p className="text-center text-2xl font-bold">{error}</p>
           </div>
         </Container>
       </div>
@@ -61,18 +61,18 @@ function Profile() {
   return (
     <div className="my-10">
       <Container>
-        <div className="border-2 border-black rounded-2xl p-5">
+        <div className="rounded-2xl border-2 border-black p-5">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
             <div>
-              <div className="sticky top-5 border-2 border-black/70 rounded-2xl p-5 flex flex-col gap-3 items-center md:items-start">
+              <div className="sticky top-5 flex flex-col items-center gap-3 rounded-2xl border-2 border-black/70 p-5 md:items-start">
                 <div>
                   <img
-                    className="w-24 h-24 rounded-full"
+                    className="h-24 w-24 rounded-full"
                     src={userData.avatar}
                     alt=""
                   />
                 </div>
-                <div className="flex flex-col gap-1 md:items-start items-center">
+                <div className="flex flex-col items-center gap-1 md:items-start">
                   <p className="text-2xl font-bold">{userData.name}</p>
                   <p className="text-base">@{userData.username}</p>
                 </div>
@@ -108,17 +108,17 @@ function Profile() {
                     blogs.map((blog) => <BlogCard key={blog._id} {...blog} />)}
                 </div>
               ) : (
-                <div className="border-2 border-black rounded-2xl p-5">
-                  <p className="font-bold text-center text-3xl">
+                <div className="rounded-2xl border-2 border-black p-5">
+                  <p className="text-center text-3xl font-bold">
                     No Post Found
                   </p>
                 </div>
               )}
             </div>
             <div>
-              <div className="sticky top-5 border-2 border-black/70 rounded-2xl p-5 hidden lg:block">
+              <div className="sticky top-5 hidden rounded-2xl border-2 border-black/70 p-5 lg:block">
                 <div className="flex flex-col gap-3">
-                  <p className="font-bold text-xl">hashtags</p>
+                  <p className="text-xl font-bold">hashtags</p>
                   <ul>
                     <li>#DSA</li>
                     <li>#ReactJs</li>

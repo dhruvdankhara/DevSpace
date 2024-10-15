@@ -41,11 +41,11 @@ function Login() {
   return (
     <div>
       <Container>
-        <section className="bg-white border-2 rounded-3xl">
-          <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-dvh">
-            <div className="w-full bg-white rounded-xl border shadow-lg max-w-lg">
-              <div className="p-14 flex flex-col gap-8">
-                <h1 className="font-bold leading-tight tracking-tight text-gray-900 text-3xl">
+        <section className="rounded-3xl border-2 bg-white">
+          <div className="mx-auto flex h-dvh flex-col items-center justify-center px-6 py-8">
+            <div className="w-full max-w-lg rounded-xl border bg-white shadow-lg">
+              <div className="flex flex-col gap-8 p-14">
+                <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
                   Sign in to your account
                 </h1>
                 <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
@@ -70,7 +70,7 @@ function Login() {
                     }}
                   />
                   {error ? (
-                    <div className="border px-5 py-3 rounded-lg border-red-800 bg-red-400/80 text-white text-wrap">
+                    <div className="text-wrap rounded-lg border border-red-800 bg-red-400/80 px-5 py-3 text-white">
                       {error}
                     </div>
                   ) : (
@@ -79,17 +79,17 @@ function Login() {
                   <div className="flex items-center justify-start">
                     <a
                       href="#"
-                      className="text-sm font-medium text-blue-600 hover:underline "
+                      className="text-sm font-medium text-blue-600 hover:underline"
                     >
                       Forgot password?
                     </a>
                   </div>
                   <Button type="submit">Sign in</Button>
-                  <p className="text-sm font-light text-gray-500 ">
+                  <p className="text-sm font-light text-gray-500">
                     Don’t have an account yet?{" "}
                     <a
                       href="#"
-                      className="font-medium text-blue-600 hover:underline "
+                      className="font-medium text-blue-600 hover:underline"
                     >
                       Sign up
                     </a>

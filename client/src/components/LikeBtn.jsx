@@ -46,11 +46,11 @@ function LikeBtn({ _id, isLiked, likes, setPost }) {
     <div className="flex gap-2 p-5">
       {isLiked ? (
         <FaHeart
-          className="w-7 h-7 fill-red-600 cursor-pointer"
+          className="h-7 w-7 cursor-pointer fill-red-600"
           onClick={unlikePost}
         />
       ) : (
-        <FaRegHeart className="w-7 h-7 cursor-pointer" onClick={likePost} />
+        <FaRegHeart className="h-7 w-7 cursor-pointer" onClick={likePost} />
       )}{" "}
       <p className="text-lg font-bold">{likes}</p>
     </div>

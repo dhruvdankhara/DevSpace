@@ -79,22 +79,22 @@ function EditUser() {
   return (
     <div className="my-10">
       <Container>
-        <div className="border-2 border-black rounded-xl p-5">
+        <div className="rounded-xl border-2 border-black p-5">
           <div>
             <div>
               <h2 className="text-center text-4xl font-bold">Edit Profile</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <div className="flex flex-col gap-5 p-5 border-2 border-black rounded-xl">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              <div className="flex flex-col gap-5 rounded-xl border-2 border-black p-5">
                 <img
-                  className="w-32 h-32 object-cover rounded-full"
+                  className="h-32 w-32 rounded-full object-cover"
                   src={avatar ? URL.createObjectURL(avatar) : userData.avatar}
                   alt=""
                 />
 
-                <button className="px-3 py-2 border border-zinc-200 bg-white shadow-sm hover:bg-zinc-100 rounded-md text-sm font-medium transition-all duration-200">
+                <button className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm font-medium shadow-sm transition-all duration-200 hover:bg-zinc-100">
                   <label
-                    className="text-lg font-bol flex justify-center items-center gap-5"
+                    className="font-bol flex items-center justify-center gap-5 text-lg"
                     htmlFor="avatar"
                   >
                     <svg
@@ -123,13 +123,13 @@ function EditUser() {
                   />
                 </button>
               </div>
-              <div className="col-span-2 border-2 p-5 border-black rounded-xl">
+              <div className="col-span-2 rounded-xl border-2 border-black p-5">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                   {/* Name */}
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="name"
-                      className="text-sm font-medium text-gray-900 "
+                      className="text-sm font-medium text-gray-900"
                     >
                       Name
                     </label>
@@ -137,7 +137,7 @@ function EditUser() {
                       type="text"
                       name="name"
                       id="name"
-                      className="bg-gray-50 border border-gray-600 text-gray-900 rounded-xl w-full px-3.5 py-2.5 "
+                      className="w-full rounded-xl border border-gray-600 bg-gray-50 px-3.5 py-2.5 text-gray-900"
                       placeholder="Enter name"
                       value={userData.name}
                       required=""
@@ -154,7 +154,7 @@ function EditUser() {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="username"
-                      className="text-sm font-medium text-gray-900 "
+                      className="text-sm font-medium text-gray-900"
                     >
                       Username
                     </label>
@@ -162,7 +162,7 @@ function EditUser() {
                       type="text"
                       name="username"
                       id="username"
-                      className="bg-gray-50 border border-gray-600 text-gray-900 rounded-xl w-full px-3.5 py-2.5 "
+                      className="w-full rounded-xl border border-gray-600 bg-gray-50 px-3.5 py-2.5 text-gray-900"
                       placeholder="Enter username"
                       value={userData.username}
                       required=""
@@ -179,7 +179,7 @@ function EditUser() {
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor="email"
-                      className="text-sm font-medium text-gray-900 "
+                      className="text-sm font-medium text-gray-900"
                     >
                       Email
                     </label>
@@ -187,7 +187,7 @@ function EditUser() {
                       type="email"
                       name="email"
                       id="email"
-                      className="bg-gray-50 border border-gray-600 text-gray-900 rounded-xl w-full px-3.5 py-2.5 "
+                      className="w-full rounded-xl border border-gray-600 bg-gray-50 px-3.5 py-2.5 text-gray-900"
                       placeholder="Enter email"
                       value={userData.email}
                       required=""
@@ -208,7 +208,7 @@ function EditUser() {
                     <select
                       name="gender"
                       id="gender"
-                      className="w-full text-xl p-2 rounded-xl border border-black"
+                      className="w-full rounded-xl border border-black p-2 text-xl"
                     >
                       <option value="male">Male</option>
                       <option value="female">Female</option>

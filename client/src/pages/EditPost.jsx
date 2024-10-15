@@ -74,16 +74,16 @@ function EditPost() {
   return (
     <div className="my-10">
       <Container>
-        <div className="border-2 flex justify-center px-10 border-black rounded-3xl">
+        <div className="flex justify-center rounded-3xl border-2 border-black px-10">
           <form
             onSubmit={handleSubmit}
-            className="max-w-3xl w-full py-10 flex flex-col gap-5"
+            className="flex w-full max-w-3xl flex-col gap-5 py-10"
           >
             {/* title */}
             <div className="flex flex-col items-start gap-1">
               <label
                 htmlFor="Title"
-                className="text-lg font-medium text-gray-900 "
+                className="text-lg font-medium text-gray-900"
               >
                 Title
               </label>
@@ -91,7 +91,7 @@ function EditPost() {
                 type="text"
                 name="title"
                 id="title"
-                className="w-full text-lg bg-gray-50 border border-gray-300 text-gray-900 rounded-lg px-3.5 py-2.5 "
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-3.5 py-2.5 text-lg text-gray-900"
                 placeholder="Enter Title"
                 value={title}
                 required=""
@@ -103,7 +103,7 @@ function EditPost() {
             <div className="flex flex-col items-start gap-1">
               <label
                 htmlFor="slug"
-                className="text-lg font-medium text-gray-900 "
+                className="text-lg font-medium text-gray-900"
               >
                 Slug
               </label>
@@ -111,7 +111,7 @@ function EditPost() {
                 type="text"
                 name="slug"
                 id="slug"
-                className="w-full text-lg bg-gray-50 border border-gray-300 text-gray-900 rounded-lg px-3.5 py-2.5 "
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 px-3.5 py-2.5 text-lg text-gray-900"
                 placeholder="Enter slug"
                 value={slug}
                 required=""
@@ -122,7 +122,7 @@ function EditPost() {
             <div className="flex flex-col items-start gap-1">
               <label
                 htmlFor="featureImage"
-                className="text-lg font-medium text-gray-900 "
+                className="text-lg font-medium text-gray-900"
               >
                 Feature Image
               </label>
@@ -136,7 +136,7 @@ function EditPost() {
                 <img className="rounded-lg" src={featureImage} alt="" />
               )}
               <input
-                className="w-full text-lg text-gray-900 border-2 border-gray-300 rounded-lg cursor-pointer bg-gray-50"
+                className="w-full cursor-pointer rounded-lg border-2 border-gray-300 bg-gray-50 text-lg text-gray-900"
                 id="featureImage"
                 type="file"
                 onChange={(e) => setImage(e.target.files[0])}
@@ -147,12 +147,12 @@ function EditPost() {
             <div className="flex flex-col items-start gap-1">
               <label
                 htmlFor="content"
-                className="text-lg font-medium text-gray-900 "
+                className="text-lg font-medium text-gray-900"
               >
                 Content
               </label>
               <textarea
-                className="p-2.5 w-full text-lg text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+                className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-lg text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                 rows="14"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
@@ -164,7 +164,7 @@ function EditPost() {
 
             {/* Button */}
             <div className="self-center">
-              <Button type="submit" className="rounded-xl text-2xl px-14 py-3">
+              <Button type="submit" className="rounded-xl px-14 py-3 text-2xl">
                 {isUpdating ? (
                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-e-blue-700"></div>
                 ) : (

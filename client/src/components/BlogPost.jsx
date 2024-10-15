@@ -77,7 +77,7 @@ function BlogPost({
     <div className="my-5">
       <div className="flex flex-col gap-8">
         {author._id == user._id ? (
-          <div className="flex items-center gap-4 border-2 border-black/50 p-4 rounded-3xl">
+          <div className="flex items-center gap-4 rounded-3xl border-2 border-black/50 p-4">
             <Button
               onClick={() => navigate(`/blog/edit/${slug}`)}
               className="rounded-xl"
@@ -86,7 +86,7 @@ function BlogPost({
             </Button>
             <Button
               onClick={handleDeletePost}
-              className="bg-red-600 rounded-xl hover:bg-red-900"
+              className="rounded-xl bg-red-600 hover:bg-red-900"
             >
               Delete
             </Button>
@@ -95,25 +95,25 @@ function BlogPost({
         ) : (
           ""
         )}
-        <div className="flex flex-col gap-4 ">
+        <div className="flex flex-col gap-4">
           <h1 className="text-5xl font-bold">{title}</h1>
-          <p className="flex justify-start items-center gap-2">
-            <FaRegEye className="w-5 h-5" />{" "}
+          <p className="flex items-center justify-start gap-2">
+            <FaRegEye className="h-5 w-5" />{" "}
             <p>
               <span className="font-semibold">{visits}</span> views
             </p>
           </p>
-          <p className="text-lg text-slate-800 font-semibold">
+          <p className="text-lg font-semibold text-slate-800">
             {formatDate(createdAt)}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           <div className="col-span-1 md:col-span-2">
-            <div className="flex border-t-2 border-b-2 border-slate-400 mb-5">
+            <div className="mb-5 flex border-b-2 border-t-2 border-slate-400">
               <LikeBtn {...{ _id, isLiked, likes }} setPost={setPost} />
               <a href="#comments" className="flex gap-2 p-5">
-                <MdOutlineComment className="w-7 h-7" />
+                <MdOutlineComment className="h-7 w-7" />
                 <p className="text-lg font-bold">{comments}</p>
               </a>
             </div>
@@ -122,21 +122,21 @@ function BlogPost({
               src={featureImage}
               alt={title}
             />
-            <pre className="text-lg text-wrap font-sans">{content}</pre>
+            <pre className="text-wrap font-sans text-lg">{content}</pre>
 
             <Comment
               {...{ title, featureImage, content, author, _id, slug, visits }}
             />
           </div>
           <div className="col-span-1">
-            <div className="border-2 border-black/50 p-5 rounded-2xl flex flex-col gap-4">
+            <div className="flex flex-col gap-4 rounded-2xl border-2 border-black/50 p-5">
               <p className="text-slate-700">Author</p>
               <Link
                 to={`/u/${author.username}`}
                 className="flex items-center gap-4"
               >
                 <img
-                  className="w-12 h-12 rounded-2xl object-cover"
+                  className="h-12 w-12 rounded-2xl object-cover"
                   src={author.avatar}
                   alt=""
                 />
@@ -146,7 +146,7 @@ function BlogPost({
                 </div>
               </Link>
               <div>
-                <div className="flex text-center gap-5">
+                <div className="flex gap-5 text-center">
                   <p>
                     <span className="font-bold">{author.posts}</span>
                     <br />
