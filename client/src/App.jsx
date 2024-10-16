@@ -12,14 +12,14 @@ function App() {
   useEffect(() => {
     getLogedInUser()
       .then((response) => {
-        if (response.status) {
+        if (response.success) {
           dispatch(login(response.data));
         } else {
           dispatch(logout());
         }
       })
       .catch((error) => {
-        console.log("🚀 ~ App.js ~ check Auth error:", error);
+        console.log("🚀 ~ Get loggedIn falied:", error);
         dispatch(logout());
       })
       .finally(() => {
@@ -32,7 +32,9 @@ function App() {
       <Header />
       <Outlet />
     </>
-  ) : null;
+  ) : (
+    <h1 className="text-center text-4xl font-bold">Loading...</h1>
+  );
 }
 
 export default App;

@@ -45,11 +45,11 @@ function Header() {
               />
             </Link>
           ) : (
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-2">
               <NavLink
                 to="login"
                 className={({ isActive }) =>
-                  `text-lg transition-all duration-300 hover:text-blue-600 ${isActive ? "font-bold text-blue-600" : "font-semibold"}`
+                  `rounded-lg px-4 py-1.5 text-lg transition-all duration-300 hover:bg-slate-700/20 ${isActive ? "font-bold text-blue-600" : "font-semibold"}`
                 }
               >
                 Login

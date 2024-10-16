@@ -1,21 +1,40 @@
-function Input({ label, type, name, classes, placeholder, value, setValue }) {
+import { forwardRef, useId } from "react";
+
+const Input = forwardRef(function Input(
+  {
+    label,
+    type = "text",
+    className = "",
+    placeholder,
+    value,
+    setValue,
+    ...props
+  },
+  ref
+) {
+  const id = useId();
   return (
-    <div className="flex flex-col gap-3">
-      <label htmlFor={name} className="text-sm font-medium text-gray-900">
-        {label}
-      </label>
+    <div className="flex flex-col gap-1">
+      {label && (
+        <label
+          htmlFor={id}
+          className="text-base font-medium capitalize text-gray-900"
+        >
+          {label}
+        </label>
+      )}
       <input
         type={type}
-        name={name}
-        id={name}
-        className={`w-full rounded-full border border-gray-300 bg-gray-50 px-3.5 py-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 ${classes}`}
         placeholder={placeholder}
+        className={`w-full rounded-xl border border-gray-300 bg-gray-50 px-3 py-2.5 text-gray-900 ${className}`}
+        id={id}
+        ref={ref}
         value={value}
-        required=""
         onChange={(e) => setValue(e.target.value)}
+        {...props}
       />
     </div>
   );
-}
+});
 
 export default Input;

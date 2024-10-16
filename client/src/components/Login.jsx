@@ -3,24 +3,26 @@ import { Button, Container, Input } from "./index";
 import { loginUser } from "../api";
 import { useDispatch } from "react-redux";
 import { login } from "../features/auth/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
 
 function Login() {
-  const [email, setEmail] = useState("dhruv@gmail.com");
-  const [password, setPassword] = useState("dhruv123");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const dispacth = useDispatch();
   const navigate = useNavigate();
+  const { register, handleSubmit } = useForm();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  const submit = async (data) => {
+    setError(null);
+    setLoading(true);
+
     const loginUserToast = toast.loading("Login user...");
 
     try {
-      const response = await loginUser({ email, password });
+      const response = await loginUser(data);
       console.log("🚀 ~ handleSubmit ~ response:", response);
 
       toast.success(`Welcome back, ${response.data.user.name}`, {
@@ -30,11 +32,14 @@ function Login() {
       dispacth(login(response.data.user));
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.log("🚀 ~ login user ~ error:", error);
+      setError(error.response.data.message);
+
       toast.error(`Error: ${error.response.data.message}`, {
         id: loginUserToast,
       });
-      setError(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,34 +53,28 @@ function Login() {
                 <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
                   Sign in to your account
                 </h1>
-                <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+                <form
+                  className="flex flex-col gap-6"
+                  onSubmit={handleSubmit(submit)}
+                >
                   <Input
-                    {...{
-                      name: "email",
-                      label: "email",
-                      type: "email",
-                      placeholder: "example@mail.com",
-                      value: email,
-                      setValue: setEmail,
-                    }}
+                    label="email"
+                    type="email"
+                    placeholder="example@mail.com"
+                    {...register("email", {
+                      required: true,
+                      value: "dhruv@gmail.com",
+                    })}
                   />
                   <Input
-                    {...{
-                      name: "password",
-                      label: "Password",
-                      type: "password",
-                      placeholder: "••••••••",
-                      value: password,
-                      setValue: setPassword,
-                    }}
+                    label="Password"
+                    type="password"
+                    placeholder="••••••••"
+                    {...register("password", {
+                      required: true,
+                      value: "dhruv123",
+                    })}
                   />
-                  {error ? (
-                    <div className="text-wrap rounded-lg border border-red-800 bg-red-400/80 px-5 py-3 text-white">
-                      {error}
-                    </div>
-                  ) : (
-                    ""
-                  )}
                   <div className="flex items-center justify-start">
                     <a
                       href="#"
@@ -84,15 +83,26 @@ function Login() {
                       Forgot password?
                     </a>
                   </div>
-                  <Button type="submit">Sign in</Button>
+                  {error ? (
+                    <div className="text-wrap rounded-lg border border-red-800 bg-red-400/80 px-5 py-3 text-white">
+                      {error}
+                    </div>
+                  ) : null}
+                  <Button type="submit" disabled={loading}>
+                    {loading ? (
+                      <div className="inline-block h-7 w-7 animate-spin rounded-full border-4 border-e-blue-700"></div>
+                    ) : (
+                      "Sign in"
+                    )}
+                  </Button>
                   <p className="text-sm font-light text-gray-500">
                     Don’t have an account yet?{" "}
-                    <a
-                      href="#"
+                    <Link
+                      to="/register"
                       className="font-medium text-blue-600 hover:underline"
                     >
                       Sign up
-                    </a>
+                    </Link>
                   </p>
                 </form>
               </div>

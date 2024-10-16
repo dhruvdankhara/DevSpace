@@ -5,27 +5,27 @@ import { useDispatch } from "react-redux";
 import { login } from "../features/auth/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
 
 function Register() {
-  const [name, setName] = useState("dhruv dankhara");
-  const [username, setUsername] = useState("dhruvdankhara");
-  const [email, setEmail] = useState("dhruvdankhara@gmail.com");
-  const [password, setPassword] = useState("dhruv123");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const dispacth = useDispatch();
   const navigate = useNavigate();
+  const { register, handleSubmit } = useForm();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const submit = async (data) => {
     setError("");
+    setLoading(true);
+
     const registerUserToast = toast.loading("Registering user...");
 
     try {
-      const response = await registerUser({ name, username, email, password });
+      const response = await registerUser(data);
       console.log("🚀 ~ Register User ~ response:", response);
 
-      toast.success(`welcome, ${response.data.user.name}`, {
+      toast.success(`welcome, ${response.data?.user?.name || "user"}`, {
         id: registerUserToast,
       });
 
@@ -33,73 +33,82 @@ function Register() {
       navigate("/");
     } catch (error) {
       console.log(error);
-      toast.error(`Error: ${error.response.data.message}`, {
-        id: registerUserToast,
-      });
+      setError(error.response?.data?.message || "Error while register user.");
+
+      toast.error(
+        error.response?.data?.message || "Error while register user.",
+        {
+          id: registerUserToast,
+        }
+      );
+    } finally {
+      setLoading(false);
     }
-    setError(error.response.data.message);
   };
 
   return (
     <div>
       <Container>
         <section className="rounded-3xl border-2 bg-white">
-          <div className="mx-auto flex h-dvh flex-col items-center justify-center px-6 py-8">
-            <div className="w-full max-w-lg rounded-xl border">
+          <div className="flex h-dvh items-center justify-center">
+            <div className="w-full max-w-lg rounded-xl border shadow-md">
               <div className="flex flex-col gap-8 p-14">
                 <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900">
                   Create new account
                 </h1>
-                <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+                <form
+                  className="flex flex-col gap-4"
+                  onSubmit={handleSubmit(submit)}
+                >
                   <Input
-                    {...{
-                      name: "name",
-                      label: "Name",
-                      type: "text",
-                      placeholder: "john doe",
-                      value: name,
-                      setValue: setName,
-                    }}
+                    label="Name"
+                    type="text"
+                    placeholder="john doe"
+                    {...register("name", {
+                      required: true,
+                      value: "dhruv dankhara",
+                    })}
                   />
                   <Input
-                    {...{
-                      name: "email",
-                      label: "Email",
-                      type: "email",
-                      placeholder: "example@mail.com",
-                      value: email,
-                      setValue: setEmail,
-                    }}
+                    label="Email"
+                    type="email"
+                    placeholder="example@mail.com"
+                    {...register("email", {
+                      required: true,
+                      value: "dhruvdankhara@gmail.com",
+                    })}
                   />
                   <Input
-                    {...{
-                      name: "username",
-                      label: "Username",
-                      type: "text",
-                      placeholder: "user123",
-                      value: username,
-                      setValue: setUsername,
-                    }}
+                    label="Username"
+                    type="text"
+                    placeholder="user123"
+                    {...register("username", {
+                      required: true,
+                      value: "dhruvdankhara",
+                    })}
                   />
                   <Input
-                    {...{
-                      name: "password",
-                      label: "Password",
-                      type: "password",
-                      placeholder: "••••••••",
-                      value: password,
-                      setValue: setPassword,
-                    }}
+                    label="Password"
+                    type="password"
+                    placeholder="••••••••"
+                    {...register("password", {
+                      required: true,
+                      value: "dhruv123",
+                    })}
                   />
                   {error ? (
                     <div className="text-wrap rounded-lg border border-red-800 bg-red-400/80 px-5 py-3 text-white">
                       {error}
                     </div>
-                  ) : (
-                    ""
-                  )}
+                  ) : null}
 
-                  <Button type="submit">Register</Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? (
+                      <div className="inline-block h-7 w-7 animate-spin rounded-full border-4 border-e-blue-700"></div>
+                    ) : (
+                      "Register"
+                    )}
+                  </Button>
                   <p className="text-sm font-light text-gray-500">
                     Already have an account?{" "}
                     <Link
