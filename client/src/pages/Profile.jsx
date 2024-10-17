@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { getUserPosts, getUserProfile } from "../api/index";
-import { Container, BlogCard, LogoutBtn } from "../components/index";
-import { useSelector } from "react-redux";
-import FollowBtn from "../components/FollowBtn";
+import { Container, BlogCard, LogoutBtn, FollowBtn } from "../components/index";
 
 function Profile() {
   const { username } = useParams();
@@ -15,35 +14,29 @@ function Profile() {
   const stateUserData = useSelector((state) => state.auth.data);
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    (async () => {
       try {
-        const userProfileResponse = await getUserProfile(username);
-        console.log(
-          "🚀 ~ fetchProfileData ~ userProfileResponse:",
-          userProfileResponse
-        );
+        const [userProfileResponse, userPostResponse] = await Promise.all([
+          getUserProfile(username),
+          getUserPosts(username),
+        ]);
+
+        console.log("🚀 ~ userProfileResponse:", userProfileResponse);
+        console.log("🚀 ~ userPostResponse:", userPostResponse);
+
         setUserData(userProfileResponse.data);
-
-        const userPostResponse = await getUserPosts(username);
-        console.log(
-          "🚀 ~ fetchProfileData ~ userPostResponse:",
-          userPostResponse
-        );
         setBlogs(userPostResponse.data);
-
-        setLoading(false);
       } catch (error) {
         console.log("🚀 ~ fetchProfileData ~ error:", error);
         setError(error.response?.data?.message || "An error occurred");
+      } finally {
         setLoading(false);
       }
-    };
-
-    fetchProfileData();
+    })();
   }, [username]);
 
   if (loading) {
-    return <div>loading...</div>;
+    return <div className="text-center text-xl font-bold">Loading...</div>;
   }
 
   if (error) {
@@ -64,12 +57,12 @@ function Profile() {
         <div className="rounded-2xl border-2 border-black p-5">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
             <div>
-              <div className="sticky top-5 flex flex-col items-center gap-3 rounded-2xl border-2 border-black/70 p-5 md:items-start">
+              <div className="sticky top-5 flex flex-col items-center gap-3 rounded-2xl border-black/70 bg-white p-5 md:items-start">
                 <div>
                   <img
                     className="h-24 w-24 rounded-full"
                     src={userData.avatar}
-                    alt=""
+                    alt={userData.name}
                   />
                 </div>
                 <div className="flex flex-col items-center gap-1 md:items-start">
@@ -104,8 +97,9 @@ function Profile() {
             <div className="md:col-span-2">
               {blogs.length > 0 ? (
                 <div className="flex flex-col gap-5">
-                  {blogs &&
-                    blogs.map((blog) => <BlogCard key={blog._id} {...blog} />)}
+                  {blogs.map((blog) => (
+                    <BlogCard key={blog._id} {...blog} />
+                  ))}
                 </div>
               ) : (
                 <div className="rounded-2xl border-2 border-black p-5">
@@ -118,7 +112,7 @@ function Profile() {
             <div>
               <div className="sticky top-5 hidden rounded-2xl border-2 border-black/70 p-5 lg:block">
                 <div className="flex flex-col gap-3">
-                  <p className="text-xl font-bold">hashtags</p>
+                  <p className="text-xl font-bold">Topics</p>
                   <ul>
                     <li>#DSA</li>
                     <li>#ReactJs</li>

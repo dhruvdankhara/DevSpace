@@ -13,6 +13,7 @@ import Comment from "./Comment";
 import CommentCard from "./CommentCard.jsx";
 import LikeBtn from "./LikeBtn.jsx";
 import Logo from "./Logo.jsx";
+import FollowBtn from "./FollowBtn.jsx";
 
 export {
   Container,
@@ -21,6 +22,7 @@ export {
   CommentCard,
   Button,
   BlogCard,
+  FollowBtn,
   BlogPost,
   Login,
   Input,
