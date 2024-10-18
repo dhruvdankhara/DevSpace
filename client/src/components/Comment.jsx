@@ -1,12 +1,11 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, CommentCard, Container, Input } from "./index";
-import { createComment, getPostComments } from "../api";
-import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import { Button, CommentCard } from "./index";
+import { createComment, getPostComments } from "../api";
 
 function Comment({ _id, author }) {
-  const [comments, setComments] = useState([{ content: "hello", _id: "dljn" }]);
+  const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -14,19 +13,15 @@ function Comment({ _id, author }) {
   const { isLoggedIn } = useSelector((state) => state.auth);
 
   const fetchComments = async () => {
-    setLoading(true);
-
-    getPostComments(_id)
-      .then((response) => {
-        setComments(response.data);
-        console.log("🚀 ~ fetchComments ~ response:", response);
-      })
-      .catch((error) => {
-        console.log("comment fetch error: ", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response = await getPostComments(_id);
+      console.log("🚀 ~ fetchComments ~ response:", response);
+      setComments(response.data);
+    } catch (error) {
+      console.log("comment fetch error: ", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -57,7 +52,7 @@ function Comment({ _id, author }) {
       console.log("🚀 ~ comment post ~ error:", error);
 
       toast.error(
-        error.response.data.message || "error while posting comment",
+        error.response?.data?.message || "error while posting comment",
         {
           id: createCommentToast,
         }
@@ -68,7 +63,9 @@ function Comment({ _id, author }) {
   };
 
   useEffect(() => {
-    fetchComments();
+    (async () => {
+      await fetchComments();
+    })();
   }, []);
 
   return (
@@ -77,14 +74,20 @@ function Comment({ _id, author }) {
         Comments
       </h1>
       <form onSubmit={handleSubmit} className="flex gap-5">
-        <img src={loggedInUser.avatar} className="w-12 rounded-full" alt="" />
+        <div>
+          <img
+            src={loggedInUser.avatar}
+            className="h-12 w-16 rounded-lg object-cover"
+            alt=""
+          />
+        </div>
         <input
           className="w-full rounded-2xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 text-gray-900"
           placeholder={"enter comment..."}
           onChange={(e) => setContent(e.target.value)}
           value={content}
         />
-        <Button className={"w-36 rounded-xl"}>Post</Button>
+        <Button className="w-36 rounded-xl">Post</Button>
       </form>
 
       {loading ? (

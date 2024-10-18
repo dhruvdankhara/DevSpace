@@ -1,11 +1,11 @@
-import { Button, Comment, LikeBtn } from "./index";
-import { useSelector } from "react-redux";
-import { deletePost, getUserProfile } from "../api/index";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaHeart, FaRegEye, FaRegHeart } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { FaRegEye } from "react-icons/fa";
 import { MdOutlineComment } from "react-icons/md";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
+import { Button, Comment, LikeBtn } from "./index";
+import { deletePost, getUserProfile } from "../api/index";
 
 function BlogPost({
   title,
@@ -22,6 +22,8 @@ function BlogPost({
   posts,
   comments,
 }) {
+  const [deletingPost, setDeletingPost] = useState(false);
+
   const user = useSelector((state) => state.auth.data);
   const navigate = useNavigate();
 
@@ -47,23 +49,30 @@ function BlogPost({
     return `${day} ${month}, ${year}`;
   }
 
-  const handleDeletePost = () => {
-    const deleteBlogToast = toast.loading("Deleting Blog Post");
+  const handleDeletePost = async () => {
+    const deleteBlogToast = toast.loading("Deleting Blog Post...");
+    setDeletingPost(true);
 
-    deletePost(slug)
-      .then((response) => {
-        console.log(response);
-        toast.success("Blog Post deleted successfully.", {
-          id: deleteBlogToast,
-        });
-        navigate("/");
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("error while deleting blog post.", {
-          id: deleteBlogToast,
-        });
+    try {
+      const response = await deletePost(slug);
+      console.log("🚀 ~ handleDeletePost ~ response:", response);
+
+      toast.success("Blog Post deleted successfully.", {
+        id: deleteBlogToast,
       });
+      navigate("/");
+    } catch (error) {
+      console.log("🚀 ~ handleDeletePost ~ error:", error);
+
+      toast.error(
+        error.response?.data?.message || "error while deleting blog post.",
+        {
+          id: deleteBlogToast,
+        }
+      );
+    } finally {
+      setDeletingPost(false);
+    }
   };
 
   useEffect(() => {
@@ -87,14 +96,17 @@ function BlogPost({
             <Button
               onClick={handleDeletePost}
               className="rounded-xl bg-red-600 hover:bg-red-900"
+              disabled={deletingPost}
             >
-              Delete
+              {deletingPost ? (
+                <div className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-e-blue-700"></div>
+              ) : (
+                "Delete"
+              )}
             </Button>
             <p className="text-slate-600">*This button only display to you.</p>
           </div>
-        ) : (
-          ""
-        )}
+        ) : null}
         <div className="flex flex-col gap-4">
           <h1 className="text-5xl font-bold">{title}</h1>
           <p className="flex items-center justify-start gap-2">
@@ -111,22 +123,26 @@ function BlogPost({
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           <div className="col-span-1 md:col-span-2">
             <div className="mb-5 flex border-b-2 border-t-2 border-slate-400">
-              <LikeBtn {...{ _id, isLiked, likes }} setPost={setPost} />
+              <LikeBtn
+                _id={_id}
+                isLiked={isLiked}
+                likes={likes}
+                setPost={setPost}
+              />
               <a href="#comments" className="flex gap-2 p-5">
                 <MdOutlineComment className="h-7 w-7" />
                 <p className="text-lg font-bold">{comments}</p>
               </a>
             </div>
+            <Comment
+              {...{ title, featureImage, content, author, _id, slug, visits }}
+            />
             <img
               className="mx-auto rounded-2xl"
               src={featureImage}
               alt={title}
             />
             <pre className="text-wrap font-sans text-lg">{content}</pre>
-
-            <Comment
-              {...{ title, featureImage, content, author, _id, slug, visits }}
-            />
           </div>
           <div className="col-span-1">
             <div className="flex flex-col gap-4 rounded-2xl border-2 border-black/50 p-5">
@@ -164,7 +180,7 @@ function BlogPost({
                   </p>
                 </div>
               </div>
-              {/* // TODO: author topics */}
+              {/*// TODO: author topics */}
               {/* <div>
                 <p></p>
               </div> */}

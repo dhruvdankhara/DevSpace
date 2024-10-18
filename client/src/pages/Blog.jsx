@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Container, BlogPost, Comment } from "../components/index";
 import { useParams } from "react-router-dom";
 import { getPost, getUserProfile } from "../api";
-import toast from "react-hot-toast";
 
 function Blog() {
   const [post, setPost] = useState({});
@@ -10,16 +9,6 @@ function Blog() {
   const { slug } = useParams();
 
   useEffect(() => {
-    // getPost(slug).then((response) => {
-    //   setPost(response.data);
-    //   setLoading(false);
-    // });
-
-    // getUserProfile(post.author.username).then((response) => {
-    //   console.log(response);
-    //   setPost((prev) => ({ ...prev, author: response.data }));
-    // });
-
     (async () => {
       const postResponse = await getPost(slug);
       console.log("🚀 ~ postResponse:", postResponse);
@@ -38,7 +27,7 @@ function Blog() {
     <div>
       <Container>
         {loading ? (
-          <p>Loading...</p>
+          <p className="text-center text-xl font-bold">Loading...</p>
         ) : (
           <>
             <BlogPost {...post} setPost={setPost} />

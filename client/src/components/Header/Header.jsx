@@ -39,7 +39,7 @@ function Header() {
           {isLoggedIn ? (
             <Link to={`/u/${user.username}`}>
               <img
-                className="size-12 cursor-pointer rounded-full ring-indigo-700 transition-all duration-300 hover:ring-8 hover:ring-slate-700/30"
+                className="size-12 cursor-pointer rounded-full object-cover ring-indigo-700 transition-all duration-300 hover:ring-8 hover:ring-slate-700/30"
                 src={user.avatar}
                 alt=""
               />
