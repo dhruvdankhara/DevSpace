@@ -25,9 +25,13 @@ export default function CommentCard({ createdAt, content, author, _id }) {
   }
 
   return (
-    <div className="flex gap-3 p-3" key={_id}>
+    <div className="flex w-full gap-3 p-3" key={_id}>
       <div>
-        <img src={author.avatar} className="w-11 rounded-full" alt="" />
+        <img
+          src={author.avatar}
+          className="h-11 w-11 rounded-full object-cover"
+          alt="user profile "
+        />
       </div>
       <div className="flex w-full flex-col gap-3 rounded-md border px-3 py-5">
         <p>

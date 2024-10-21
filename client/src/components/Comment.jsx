@@ -7,6 +7,7 @@ import { createComment, getPostComments } from "../api";
 function Comment({ _id, author }) {
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
+  const [postingComment, setPostingComment] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const loggedInUser = useSelector((state) => state.auth.data);
@@ -38,6 +39,7 @@ function Comment({ _id, author }) {
     }
 
     const createCommentToast = toast.loading("uploading comment...");
+    setPostingComment(true);
 
     try {
       const response = await createComment({ blogId: _id, content });
@@ -57,9 +59,10 @@ function Comment({ _id, author }) {
           id: createCommentToast,
         }
       );
+    } finally {
+      setPostingComment(false);
+      setContent("");
     }
-
-    setContent("");
   };
 
   useEffect(() => {
@@ -77,17 +80,23 @@ function Comment({ _id, author }) {
         <div>
           <img
             src={loggedInUser.avatar}
-            className="h-12 w-16 rounded-lg object-cover"
-            alt=""
+            className="h-12 w-16 rounded-full object-cover"
+            alt="user profile"
           />
         </div>
         <input
           className="w-full rounded-2xl border border-gray-300 bg-gray-50 px-3.5 py-2.5 text-gray-900"
-          placeholder={"enter comment..."}
+          placeholder="enter comment..."
           onChange={(e) => setContent(e.target.value)}
           value={content}
         />
-        <Button className="w-36 rounded-xl">Post</Button>
+        <Button disabled={postingComment} className="w-36 rounded-xl text-lg">
+          {postingComment ? (
+            <div className="inline-block h-7 w-7 animate-spin rounded-full border-4 border-e-blue-700"></div>
+          ) : (
+            "Post"
+          )}
+        </Button>
       </form>
 
       {loading ? (

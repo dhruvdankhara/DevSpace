@@ -134,18 +134,18 @@ function BlogPost({
                 <p className="text-lg font-bold">{comments}</p>
               </a>
             </div>
-            <Comment
-              {...{ title, featureImage, content, author, _id, slug, visits }}
-            />
             <img
               className="mx-auto rounded-2xl"
               src={featureImage}
               alt={title}
             />
             <pre className="text-wrap font-sans text-lg">{content}</pre>
+            <Comment
+              {...{ title, featureImage, content, author, _id, slug, visits }}
+            />
           </div>
           <div className="col-span-1">
-            <div className="flex flex-col gap-4 rounded-2xl border-2 border-black/50 p-5">
+            <div className="flex flex-col gap-4 rounded-2xl border-2 border-black/50 bg-white p-5">
               <p className="text-slate-700">Author</p>
               <Link
                 to={`/u/${author.username}`}

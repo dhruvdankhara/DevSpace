@@ -1,9 +1,17 @@
 import toast from "react-hot-toast";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import apiClient, { likeBlogPost, unlikeBlogPost } from "../api";
+import { useSelector } from "react-redux";
 
 function LikeBtn({ _id, isLiked, likes, setPost }) {
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
   const likePost = async () => {
+    if (!isLoggedIn) {
+      toast.error("Login to like blog posts.");
+      return;
+    }
+
     const likeToast = toast.loading("Liking Post...");
 
     try {
