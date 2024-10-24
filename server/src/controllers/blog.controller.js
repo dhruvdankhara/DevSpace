@@ -63,7 +63,11 @@ export const deleteBlogPost = asyncHandler(async (req, res) => {
       .split(".")[0]
   );
 
-  await Blog.findOneAndDelete({ slug: blogId });
+  await Blog.findByIdAndDelete(blog._id);
+
+  await Comment.deleteMany({ blogId: blog._id });
+
+  await Like.deleteMany({ blogId: blog._id });
 
   const response = new ApiResponse(200, null, "Blog post deleted successfully");
   return res.status(response.statusCode).json(response);

@@ -1,34 +1,46 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { Button, Container } from "../components/index";
 import { useEffect, useState } from "react";
-import { getUserProfile, updateAvatar, updateUser } from "../api/index";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
 import { login } from "../features/auth/authSlice";
+import {
+  Button,
+  ChangePassword,
+  Container,
+  Input,
+  UpdateAvatar,
+} from "../components/index";
+import { getUserProfile, updateAvatar, updateUser } from "../api/index";
+import { useForm } from "react-hook-form";
 
 function EditUser() {
-  const { username } = useParams();
-
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(
+    useSelector((state) => state.auth.data)
+  );
   const [avatar, setAvatar] = useState("");
   const [isError, setIsError] = useState("");
+
+  const { register, handleSubmit } = useForm();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const updateUserAvatar = async () => {
+  // TODOD: call api on image select
+  const updateUserAvatar = async (e) => {
     const updateAvatarToast = toast.loading("Updating Avatar...");
 
     const formData = new FormData();
-    formData.append("avatar", avatar);
+    formData.append("avatar", e.target.files[0]);
     try {
       const response = await updateAvatar(formData);
       console.log("🚀 ~ updateAvatar ~ response:", response);
 
+      dispatch(login(response.data));
+      setUserData(response.data);
+
       toast.success("Avatar update successfully.", {
         id: updateAvatarToast,
       });
-      dispatch(login(response.data));
     } catch (error) {
       console.log("🚀 ~ updateAvatar ~ error:", error);
 
@@ -38,191 +50,103 @@ function EditUser() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (avatar) {
-      await updateUserAvatar();
-    }
-
+  const submit = async (data) => {
     const updateUserToast = toast.loading("Updating your details.");
+
     try {
-      const response = await updateUser(userData);
+      const response = await updateUser(data);
       console.log("🚀 ~ updateUser ~ response:", response);
 
       toast.success("User details updated successfully.", {
         id: updateUserToast,
       });
       dispatch(login(response.data));
-      navigate(`/u/${response.data.username}`);
+      // navigate(`/u/${response.data.username}`);
     } catch (error) {
       console.log("🚀 ~ updateUser ~ error:", error);
 
-      toast.error(`Error: ${error.response.data.message}`, {
-        id: updateUserToast,
-      });
+      toast.error(
+        `Error: ${error.response?.data?.message || "Error while updating user information."}`,
+        {
+          id: updateUserToast,
+        }
+      );
     }
   };
 
-  useEffect(() => {
-    getUserProfile(username)
-      .then((response) => {
-        console.log(response);
-        setUserData(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsError(error.response.data.message);
-      });
-  }, []);
+  useEffect(() => {}, [avatar]);
 
   return (
     <div className="my-10">
       <Container>
-        <div className="rounded-xl border-2 border-black p-5">
-          <div>
-            <div>
-              <h2 className="text-center text-4xl font-bold">Edit Profile</h2>
-            </div>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-              <div className="flex flex-col gap-5 rounded-xl border-2 border-black p-5">
-                <img
-                  className="h-32 w-32 rounded-full object-cover"
-                  src={avatar ? URL.createObjectURL(avatar) : userData.avatar}
-                  alt=""
-                />
+        <h1 className="mb-6 text-3xl font-bold">Edit Profile</h1>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="row-span-2 rounded-xl border border-slate-300 p-7 shadow md:col-span-2">
+            <h2 className="mb-6 text-xl font-semibold">Personal Information</h2>
 
-                <button className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm font-medium shadow-sm transition-all duration-200 hover:bg-zinc-100">
-                  <label
-                    className="font-bol flex items-center justify-center gap-5 text-lg"
-                    htmlFor="avatar"
-                  >
-                    <svg
-                      className="h-4 w-4"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="17 8 12 3 7 8" />
-                      <line x1="12" x2="12" y1="3" y2="15" />
-                    </svg>
-                    <span>Upload Photo</span>
-                  </label>
-                  <input
-                    onChange={(e) => setAvatar(e.target.files[0])}
-                    className="hidden"
-                    id="avatar"
-                    type="file"
-                  />
-                </button>
+            <form className="space-y-4" onSubmit={handleSubmit(submit)}>
+              <Input
+                id="name"
+                label="Name"
+                placeholder="John Doe"
+                {...register("name", {
+                  value: userData.name,
+                  required: true,
+                })}
+              />
+              <Input
+                id="username"
+                label="Username"
+                placeholder="johndoe"
+                {...register("username", {
+                  value: userData.username,
+                  required: true,
+                })}
+              />
+              <Input
+                label="Email"
+                type="email"
+                placeholder="john.doe@example.com"
+                {...register("email", {
+                  value: userData.email,
+                  required: true,
+                })}
+              />
+              <div className="flex flex-col gap-1">
+                <label
+                  htmlFor="gender"
+                  className="text-base font-medium capitalize text-gray-900"
+                >
+                  Gender:
+                </label>
+                <select
+                  name="gender"
+                  id="gender"
+                  className="w-full rounded-xl border border-gray-300 bg-gray-50 px-3 py-2.5 text-gray-900"
+                  {...register("gender", {
+                    value: userData.gender,
+                  })}
+                >
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                  <option value="OTHER">Other</option>
+                </select>
               </div>
-              <div className="col-span-2 rounded-xl border-2 border-black p-5">
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                  {/* Name */}
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="name"
-                      className="text-sm font-medium text-gray-900"
-                    >
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      id="name"
-                      className="w-full rounded-xl border border-gray-600 bg-gray-50 px-3.5 py-2.5 text-gray-900"
-                      placeholder="Enter name"
-                      value={userData.name}
-                      required=""
-                      onChange={(e) =>
-                        setUserData((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
+              <Button
+                type="submit"
+                className="w-full bg-zinc-800 hover:bg-zinc-900"
+              >
+                Save Changes
+              </Button>
+            </form>
+          </div>
 
-                  {/* username */}
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="username"
-                      className="text-sm font-medium text-gray-900"
-                    >
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      name="username"
-                      id="username"
-                      className="w-full rounded-xl border border-gray-600 bg-gray-50 px-3.5 py-2.5 text-gray-900"
-                      placeholder="Enter username"
-                      value={userData.username}
-                      required=""
-                      onChange={(e) =>
-                        setUserData((prev) => ({
-                          ...prev,
-                          username: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
+          <div className="rounded-xl border border-slate-300 p-7 shadow md:col-span-1">
+            <UpdateAvatar userData={userData} setUserData={setUserData} />
+          </div>
 
-                  {/* email */}
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor="email"
-                      className="text-sm font-medium text-gray-900"
-                    >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="w-full rounded-xl border border-gray-600 bg-gray-50 px-3.5 py-2.5 text-gray-900"
-                      placeholder="Enter email"
-                      value={userData.email}
-                      required=""
-                      onChange={(e) =>
-                        setUserData((prev) => ({
-                          ...prev,
-                          email: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-
-                  {/* gender */}
-                  <div>
-                    <label htmlFor="gender" className="font-semibold">
-                      Gender:
-                    </label>
-                    <select
-                      name="gender"
-                      id="gender"
-                      className="w-full rounded-xl border border-black p-2 text-xl"
-                    >
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-
-                  {/* submit button */}
-                  <div className="self-center">
-                    <Button type="submit">Save Changes</Button>
-                  </div>
-                </form>
-              </div>
-            </div>
+          <div className="rounded-xl border border-slate-300 p-7 shadow md:col-span-1">
+            <ChangePassword />
           </div>
         </div>
       </Container>

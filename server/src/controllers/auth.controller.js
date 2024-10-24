@@ -123,7 +123,7 @@ export const changeCurrentPassword = asyncHandler(async (req, res) => {
 
   await user.save();
 
-  const response = new ApiResponse(200, {}, "Password chnaged successfully");
+  const response = new ApiResponse(200, {}, "Password changed successfully");
   return res.status(response.statusCode).json(response);
 });
 

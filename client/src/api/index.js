@@ -33,6 +33,14 @@ export const getLogedInUser = async () => {
   return response.data;
 };
 
+export const changePassword = async ({ oldPassword, newPassword }) => {
+  const response = await apiClient.post("/auth/change-password", {
+    oldPassword,
+    newPassword,
+  });
+  return response.data;
+};
+
 // user profile calles
 
 export const getUserProfile = async (username) => {

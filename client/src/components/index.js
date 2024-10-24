@@ -9,16 +9,19 @@ import Register from "./Register";
 import BlogForm from "./BlogForm";
 import LogoutBtn from "./LogoutBtn";
 import Comment from "./Comment";
-
+import ChangePassword from "./ChangePassword.jsx";
 import CommentCard from "./CommentCard.jsx";
 import LikeBtn from "./LikeBtn.jsx";
 import Logo from "./Logo.jsx";
 import FollowBtn from "./FollowBtn.jsx";
+import UpdateAvatar from "./UpdateAvatar.jsx";
 
 export {
   Container,
+  UpdateAvatar,
   Header,
   Logo,
+  ChangePassword,
   CommentCard,
   Button,
   BlogCard,

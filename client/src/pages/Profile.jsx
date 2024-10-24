@@ -83,7 +83,7 @@ function Profile() {
                   <div className="flex gap-3">
                     <Link
                       className="rounded-2xl bg-blue-600 px-5 py-2 font-semibold text-white transition-all duration-300 hover:bg-blue-900"
-                      to={`/u/${userData.username}/edit`}
+                      to={`/edit-user`}
                     >
                       Edit
                     </Link>
