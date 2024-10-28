@@ -14,6 +14,7 @@ import CreateBlog from "./pages/CreateBlog.jsx";
 import EditPost from "./pages/EditPost.jsx";
 import Profile from "./pages/Profile.jsx";
 import EditUser from "./pages/EditUser.jsx";
+import Explore from "./pages/Explore.jsx";
 
 const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: "/blog/edit/:blogId",
         element: <EditPost />,
+      },
+      {
+        path: "/explore",
+        element: <Explore />,
       },
     ],
   },

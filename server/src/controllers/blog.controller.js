@@ -31,9 +31,7 @@ export const createBlogPost = asyncHandler(async (req, res) => {
     title,
     content,
     slug,
-    featureImage:
-      imageUrl?.secure_url ||
-      "https://res.cloudinary.com/dhruvdankhara/image/upload/v1724047654/ojfvrc6uszdrzeclrm7p.png",
+    featureImage: imageUrl?.secure_url || "",
   });
 
   if (!blog) {
@@ -230,6 +228,55 @@ export const getAllBlogPosts = asyncHandler(async (req, res) => {
     200,
     blog,
     "Blog posts retrieved successfully"
+  );
+  return res.status(response.statusCode).json(response);
+});
+
+export const getPopularBlogPosts = asyncHandler(async (req, res) => {
+  const blog = await Blog.aggregate([
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "author",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              avatar: 1,
+              email: 1,
+              _id: 1,
+              name: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        author: {
+          $first: "$author",
+        },
+      },
+    },
+    {
+      $project: {
+        userId: 0,
+        __v: 0,
+      },
+    },
+    {
+      $sort: {
+        visits: -1,
+      },
+    },
+  ]);
+
+  const response = new ApiResponse(
+    200,
+    blog,
+    "Popular blog posts retrieved successfully"
   );
   return res.status(response.statusCode).json(response);
 });

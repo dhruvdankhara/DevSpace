@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { LuImage } from "react-icons/lu";
-import { createPost } from "../api";
+import { createPost, editPost } from "../api";
 import { Container, Button, Input } from "./index";
 
-function BlogForm() {
+function BlogForm({ blogData }) {
   const [loading, setLoading] = useState(false);
+  const isEdit = blogData ? true : false;
 
   const navigate = useNavigate();
 
@@ -35,34 +36,72 @@ function BlogForm() {
   }, [setValue, watch]);
 
   const submit = async ({ title, slug, content, featureImage }) => {
-    const postingToast = toast.loading("Uploading blog post...");
-    setLoading(true);
+    if (isEdit) {
+      const editPostToast = toast.loading("Updating blog post...");
+      setLoading(true);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("slug", slug);
-    formData.append("content", content);
-    formData.append("featureImage", featureImage);
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("slug", slug);
+      formData.append("content", content);
 
-    try {
-      const response = await createPost(formData);
-      console.log("🚀 ~ create post submit ~ response:", response);
+      if (featureImage) {
+        formData.append("featureImage", featureImage);
+      }
 
-      toast.success("Blog post Uploaded successfully.", {
-        id: postingToast,
-      });
-      navigate(`/blog/${response.data.slug}`);
-    } catch (error) {
-      console.log("🚀 ~ create post submit ~ error:", error);
+      try {
+        const response = await editPost({
+          blogId: blogData.slug,
+          data: formData,
+        });
+        console.log("🚀 ~ handleSubmit ~ response:", response);
 
-      toast.error(
-        error.response?.data?.message || "Error in blog post uploading.",
-        {
+        toast.success("Blog post Updated successfully.", {
+          id: editPostToast,
+        });
+        navigate(`/blog/${response.data.slug}`);
+      } catch (error) {
+        console.log("🚀 ~ edit post submit ~ error:", error);
+
+        toast.error(
+          error.response?.data?.message || "Error in blog post editing.",
+          {
+            id: editPostToast,
+          }
+        );
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      const postingToast = toast.loading("Uploading blog post...");
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("slug", slug);
+      formData.append("content", content);
+      formData.append("featureImage", featureImage);
+
+      try {
+        const response = await createPost(formData);
+        console.log("🚀 ~ create post submit ~ response:", response);
+
+        toast.success("Blog post Uploaded successfully.", {
           id: postingToast,
-        }
-      );
-    } finally {
-      setLoading(false);
+        });
+        navigate(`/blog/${response.data.slug}`);
+      } catch (error) {
+        console.log("🚀 ~ create post submit ~ error:", error);
+
+        toast.error(
+          error.response?.data?.message || "Error in blog post uploading.",
+          {
+            id: postingToast,
+          }
+        );
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -75,12 +114,18 @@ function BlogForm() {
             <Input
               label="Title"
               placeholder="Enter your blog post title"
-              {...register("title", { required: true })}
+              {...register("title", {
+                required: true,
+                value: blogData?.title || "",
+              })}
             />
             <Input
               label="Slug"
               placeholder="url-friendly-version-of-title"
-              {...register("slug", { required: true })}
+              {...register("slug", {
+                required: true,
+                value: blogData?.slug || "",
+              })}
               disabled="true"
             />
             <div className="flex flex-col gap-1">
@@ -94,7 +139,10 @@ function BlogForm() {
                 id="content"
                 placeholder="Write your blog post content here"
                 className="min-h-[200px] w-full rounded-xl border border-gray-300 p-2"
-                {...register("content", { required: true })}
+                {...register("content", {
+                  required: true,
+                  value: blogData?.content || "",
+                })}
               ></textarea>
             </div>
             <div>
@@ -136,18 +184,27 @@ function BlogForm() {
                 accept="image/*"
                 className="hidden"
               />
-              {featureImage && (
-                <div className="rounded-xl border-2 px-5 py-3">
-                  <p className="text-muted-foreground mt-2 text-sm">
-                    Selected file: {featureImage.name}
-                  </p>
+              <div className="mt-4 rounded-xl border-2 px-5 py-3">
+                {featureImage && (
+                  <>
+                    <p className="text-muted-foreground mt-2 text-sm">
+                      Selected file: {featureImage.name}
+                    </p>
+                    <img
+                      className="mx-auto h-96 w-5/6 rounded-lg bg-cover object-cover"
+                      src={URL.createObjectURL(featureImage)}
+                      alt=""
+                    />
+                  </>
+                )}
+                {blogData && !featureImage ? (
                   <img
                     className="mx-auto h-96 w-5/6 rounded-lg bg-cover object-cover"
-                    src={URL.createObjectURL(featureImage)}
+                    src={blogData.featureImage}
                     alt=""
                   />
-                </div>
-              )}
+                ) : null}
+              </div>
             </div>
             <Button
               type="submit"
@@ -156,6 +213,8 @@ function BlogForm() {
             >
               {loading ? (
                 <span className="inline-block size-6 animate-spin rounded-full border-4 border-e-slate-700"></span>
+              ) : isEdit ? (
+                "Update Post"
               ) : (
                 "Publish Post"
               )}

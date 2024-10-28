@@ -48,9 +48,9 @@ function UpdateAvatar({ userData, setUserData }) {
           alt=""
         />
 
-        <Button
+        <button
           disabled={loading}
-          className="flex items-center border-2 border-zinc-200 bg-white font-medium text-black shadow-sm hover:bg-zinc-100"
+          className="flex items-center rounded-xl border-2 border-zinc-200 bg-white px-5 py-2 text-sm font-medium text-black shadow-sm transition-all duration-300 hover:bg-zinc-100 md:text-base"
         >
           {loading ? (
             <span className="inline-block size-6 animate-spin rounded-full border-4 border-e-slate-700"></span>
@@ -86,7 +86,7 @@ function UpdateAvatar({ userData, setUserData }) {
               />
             </>
           )}
-        </Button>
+        </button>
       </div>
     </>
   );

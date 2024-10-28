@@ -11,14 +11,15 @@ function ChangePassword() {
   const { register, handleSubmit } = useForm();
 
   const submit = async (data) => {
-    setLoading(true);
     setError("");
-    const changePasswordToast = toast.loading("Changing password...");
 
     if (data.newPassword !== data.confirmPassword) {
       setError("New passsword and confirm password not match.");
       return;
     }
+
+    setLoading(true);
+    const changePasswordToast = toast.loxading("Changing password...");
 
     try {
       const response = await changePassword({

@@ -1,14 +1,18 @@
 import { useSelector } from "react-redux";
-import { Button, Container, Logo } from "../index.js";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { FaBars } from "react-icons/fa";
+import { Button, Container, Logo } from "../index.js";
+import { useState } from "react";
 
 function Header() {
   const navigate = useNavigate();
+
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const user = useSelector((state) => state.auth.data);
 
   const navItems = [
     { name: "Home", link: "/", active: true },
+    { name: "Explore", link: "/explore", active: true },
     { name: "Write Post", link: "/create-post", active: isLoggedIn },
   ];
   return (
@@ -49,12 +53,17 @@ function Header() {
               <NavLink
                 to="login"
                 className={({ isActive }) =>
-                  `rounded-lg px-4 py-1.5 text-lg transition-all duration-300 hover:bg-slate-700/20 ${isActive ? "font-bold text-blue-600" : "font-semibold"}`
+                  `rounded-lg px-4 py-1.5 text-base transition-all duration-300 hover:bg-slate-700/20 md:text-lg ${isActive ? "font-bold text-blue-600" : "font-semibold"}`
                 }
               >
                 Login
               </NavLink>
-              <Button onClick={() => navigate("/register")}>Get started</Button>
+              <Button
+                className="px-3 py-1.5"
+                onClick={() => navigate("/register")}
+              >
+                Get started
+              </Button>
             </div>
           )}
         </nav>

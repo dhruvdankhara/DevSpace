@@ -90,6 +90,11 @@ export const editPost = async ({ blogId, data }) => {
   return response.data;
 };
 
+export const getPopularPost = async () => {
+  const response = await apiClient.get("/blog/popular");
+  return response.data;
+};
+
 // comment
 
 export const createComment = async ({ blogId, content }) => {
